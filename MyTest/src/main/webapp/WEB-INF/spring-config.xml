@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+ xmlns:util="http://www.springframework.org/schema/util" xmlns:mvc="http://www.springframework.org/schema/mvc"
+ xmlns:beans="http://www.springframework.org/schema/beans"
+ xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+  http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.2.xsd
+  http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+  http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd" >
+
+	<!-- DispatcherServlet Context: defines this servlet's request-processing 
+		infrastructure -->
+
+	<!-- Enables the Spring MVC @Controller programming model -->
+	<mvc:annotation-driven />
+
+	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
+		up static resources in the ${webappRoot}/resources directory -->
+	<!--  <resources mapping="/resources/**" location="/resources/" />  -->
+
+	 <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/StarWholesale" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+
+	 <bean id="cpPracticeDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/cppractice" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+	
+	<bean id="demoDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost:3306/demo" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+ <!-- 
+ 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver" />
+		<property name="url" value="jdbc:sqlserver://W8-UBHAVSAR\SQL;databaseName=demo" />
+		<property name="username" value="sa" />
+		<property name="password" value="rays@123" />
+	</bean>
+-->	
+	
+	<bean id="cpPracticeSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="cpPracticeDataSource" />
+		<property name="annotatedClasses">
+			<list>
+				
+				    <value>com.starWholesale.hb.entity.ArCust</value>
+			        <value>com.starWholesale.hb.entity.ImCategCod</value>
+			        <value>com.starWholesale.hb.entity.ImItem</value>
+			       
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	
+	</bean>
+
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				
+				    <value>com.starWholesale.hb.entity.DeviceTokenMaster</value>
+			        <value>com.starWholesale.hb.entity.FlyerMaster</value>
+			        <value>com.starWholesale.hb.entity.UserMaster</value>
+			        <value>com.starWholesale.hb.entity.CategoryMaster</value>
+			        <value>com.starWholesale.hb.entity.CartDetail</value>
+			        <value>com.starWholesale.hb.entity.CartMaster</value>
+			        <value>com.starWholesale.hb.entity.ImageMaster</value>
+			        <value>com.starWholesale.hb.entity.RatingMaster</value>
+			        <value>com.starWholesale.hb.entity.ProductMaster</value>
+			    
+				<!--  <value>com.mytest.domain.Employee</value>
+				
+				<value>com.mytest.domain.Empaddress</value> -->
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+		
+		 <!-- <property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.SQLServerDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+		 -->
+	</bean>
+
+	<bean id="demoSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="demoDataSource" />
+		<property name="annotatedClasses">
+			<list>
+				
+				    <value>com.mytest.domain.Empaddress</value>
+			        <value>com.mytest.domain.Employee</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	
+	</bean>
+
+
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+<!-- 		<property name="cpPracticeSessionFactory" ref="cpPracticeSessionFactory" /> -->
+	</bean>
+
+	<bean id="persistenceExceptionTranslationPostProcessor" class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+
+	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
+		in the /WEB-INF/views directory -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<!--   Configure to plugin JSON as request and response in method handler -->
+  	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonMessageConverter" />
+			</list>
+		</property>
+	</bean>
+ 
+	<!-- Configure bean to convert JSON to POJO and vice versa -->
+ 	<bean id="jsonMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+	</bean> 
+
+	<context:component-scan base-package="com.mytest" />
+	<context:component-scan base-package="com.starWholesale.hb" />
+	
+	
+	
+</beans>
